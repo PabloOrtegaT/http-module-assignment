@@ -2,24 +2,40 @@ const fs = require('fs');
 const os = require('os');
 
 const home = (request, response) => {
-  response.writeHead(200, { 'Content-Type': 'text/html' });
-//   const html = fs.readFileSync('./src/public/index.html', 'utf-8');
-//   response.write(html);
-  response.end();
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    fs.promises.readFile('./public/index.html', { encoding: "utf-8" })
+    .then(function(result){
+        response.write(result);
+        response.end();
+    })
+    .catch(function(err) {
+        console.log("Error while trying to recover index.html" + err);
+   });;
 };
+
 const notFound = (request, response) => {
-  response.writeHead(404, { 'Content-Type': 'text/html' });
-//   const html = fs.readFileSync('./src/public/404.html', 'utf-8');
-//   response.write(html);
-  response.end();
+    response.writeHead(404, { 'Content-Type': 'text/html' });
+    fs.promises.readFile('./public/404.html', { encoding: "utf-8" })
+    .then(function(result){
+        response.write(result);
+        response.end();
+    })
+    .catch(function(err) {
+        console.log("Error while trying to recover 404.html" + err);
+    });
 };
 
 const books = (request, response) => {
   if (request.method === 'GET') {
     response.writeHead(200, { 'Content-Type': 'application/json' });
-    // const content = `${fs.readFileSync('./src/books.txt')}`;
-    // response.write(content);
-    response.end();
+    fs.promises.readFile('./public/books.txt', { encoding: "utf-8" })
+    .then(function(result){
+        response.write(result);
+        response.end();
+    })
+    .catch(function(err) {
+        console.log("Error while trying to recover 404.html" + err);
+    });
   } else if (request.method === 'POST') {
     response.writeHead(200, { 'Content-Type': 'application/json' });
     let body = '';
@@ -28,13 +44,13 @@ const books = (request, response) => {
     }).on('data', (part) => {
       body += part;
     }).on('end', () => {
-    //   fs.writeFileSync('./src/books.txt', body, { flag: 'a' });
+      fs.writeFileSync('./public/books.txt', body, { flag: 'a' });
       response.write('Book added!');
       response.end();
     });
   } else if (request.method === 'DELETE') {
     response.writeHead(200, { 'Content-Type': 'application/json' });
-    // fs.truncate('./src/books.txt', 0, () => console.log('books deleted'));
+    fs.truncate('./public/books.txt', 0, () => console.log('books deleted'));
     response.write('Books deleted!');
     response.end();
   }
@@ -43,16 +59,17 @@ const books = (request, response) => {
 const fileViewer = (request, response) => {
   const myUrl = new URL(`${request.headers.host}${request.url}`);
   const fileRequested = myUrl.searchParams.get('name');
-  try {
+  console.log(fileRequested)
     response.writeHead(200, { 'Content-Type': 'text/plain' });
-    // const fileContent = fs.readFileSync(`./${fileRequested}`, 'utf-8');
-    // response.write('File content');
-    // response.write(fileContent);
-  } catch (err) {
-    console.log(err);
-    notFound(request, response);
-  }
-  response.end();
+    fs.promises.readFile(`./${fileRequested}`, { encoding: "utf-8" })
+    .then(function(result){
+        response.write(result);
+        response.end();
+    })
+    .catch(function(err) {
+        console.log(`Error while trying to recover the file requested: ${fileRequested} .`+ err);
+        notFound(request, response)
+    });
 };
 
 const serverStatus = (request, response) => {
