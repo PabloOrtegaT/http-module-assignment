@@ -4,7 +4,7 @@ const { getMyNumber, postMyNumber, putMyNumber, getMyNumberMultiplied } = requir
 
 const home = (request, response) => {
     response.writeHead(200, { 'Content-Type': 'text/html' });
-    fs.readFileSync('./public/index.html', { encoding: "utf-8" })
+    fs.promises.readFile('./src/public/index.html', { encoding: "utf-8" })
     .then(function(result){
         response.write(result);
         response.end();
@@ -16,7 +16,7 @@ const home = (request, response) => {
 
 const notFound = (request, response) => {
     response.writeHead(404, { 'Content-Type': 'text/html' });
-    fs.readFileSync('./public/404.html', { encoding: "utf-8" })
+    fs.promises.readFile('./src/public/404.html', { encoding: "utf-8" })
     .then(function(result){
         response.write(result);
         response.end();
@@ -28,16 +28,16 @@ const notFound = (request, response) => {
 
 const reset = (request, response) => {
   if(request.method === 'DELETE'){
-      const numberJSON = fs.readFileSync('./public/data.txt', { encoding: "utf-8" });
-      const myNumber = JSON.parse(numberJSON).myNumber;
+      const myNumberJSON = fs.readFileSync('./src/public/data.txt', { encoding: "utf-8" });
+      const myNumber = JSON.parse(myNumberJSON).myNumber;
 
       if(myNumber !== null && request.url === '/reset'){
-          fs.writeFileSync('./public/data.txt', JSON.stringify({
+          fs.writeFileSync('./src/public/data.txt', JSON.stringify({
               myNumber : null
           }));
 
           response.statusCode = 200;
-          return response.end(JSON.stringify({ message: 'Successfully deleted' }));
+          return response.end(JSON.stringify({ message: 'Number deleted' }));
       }
       return notFound(request, response);
   }
@@ -49,11 +49,12 @@ const reset = (request, response) => {
 const myNumber = (request, response) => {
   switch(request.method) {
       case 'GET':
-          const isNumberRegex = /^\d+$/;
-          const uriParam = request.url.split('/')[2];
+          const regex = /^\d+$/;
+          const uriParams = request.url.split('/')[2];
 
           if(request.url === '/myNumber') return getMyNumber(request, response);
-          if(isNumberRegex.test(uriParam)) getMyNumberMultiplied(request, response, uriParam);
+          if(regex.test(uriParams)) getMyNumberMultiplied(request, response, uriParams);
+
           else notFound(request, response);   
       break;
 

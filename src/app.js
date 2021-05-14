@@ -3,10 +3,9 @@ const number = require('./routes/number.js')
 
 const myRouter = (path) => {
   const routes = {
-    '/': number.home,
-    '/myNumber': number.myNumber,
-    '/reset': number.reset,
-  };
+    myNumber: number.myNumber,
+    reset: number.reset
+}
   if (routes[path]){
     return routes[path];
   }
@@ -14,8 +13,10 @@ const myRouter = (path) => {
 }
 
 const server = http.createServer((req, res) => {
-  const routeUsed = req.url.split('?')[0];
-  const route = myRouter(routeUsed);
+  const [, domain] = req.url.split('/');
+
+  res.setHeader('Content-Type', 'application/json');
+  const route = myRouter(domain);
   return route(req, res);
 })
 

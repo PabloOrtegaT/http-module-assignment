@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const getMyNumber = (req, res) => {
-    const numberJSON = fs.readFileSync('./public/data.txt', { encoding: "utf-8" });
+    const numberJSON = fs.readFileSync('./src/public/data.txt', { encoding: "utf-8" });
     const myNumber = JSON.parse(numberJSON).myNumber;
 
     if(myNumber !== null){
@@ -16,7 +16,7 @@ const getMyNumber = (req, res) => {
 }
 
 const getMyNumberMultiplied = (req, res, uriParam) => {
-    const numberJSON = fs.readFileSync('./public/data.txt', { encoding: "utf-8" });
+    const numberJSON = fs.readFileSync('./src/public/data.txt', { encoding: "utf-8" });
     const myNumber = JSON.parse(numberJSON).myNumber;
 
     if(myNumber !== null){
@@ -31,7 +31,7 @@ const getMyNumberMultiplied = (req, res, uriParam) => {
 }
 
 const postMyNumber = (req, res) => {
-    const numberJSON = fs.readFileSync('./public/data.txt', { encoding: "utf-8" });
+    const numberJSON = fs.readFileSync('./src/public/data.txt', { encoding: "utf-8" });
     const myNumber = JSON.parse(numberJSON).myNumber;
 
     if(myNumber === null){
@@ -48,7 +48,7 @@ const postMyNumber = (req, res) => {
                 return res.end(JSON.stringify({ message: 'Input can only be a number' }));
             }
 
-          fs.writeFileSync('./public/data.txt', buffer, { encoding: 'utf-8'} );
+          fs.writeFileSync('./src/public/data.txt', buffer, { encoding: 'utf-8'} );
           res.statusCode = 201;
           return res.end(JSON.stringify({
               message: 'Number successfully created'
@@ -62,7 +62,7 @@ const postMyNumber = (req, res) => {
 
 
 const putMyNumber = (req, res) => {
-    const numberJSON = fs.readFileSync('./public/data.txt', { encoding: "utf-8" });
+    const numberJSON = fs.readFileSync('./src/public/data.txt', { encoding: "utf-8" });
     const myNumber = JSON.parse(numberJSON).myNumber;
 
     if(myNumber !== null){
@@ -79,7 +79,7 @@ const putMyNumber = (req, res) => {
                 return res.end(JSON.stringify({ message: 'Input can only be a number' }));
             }
 
-          fs.writeFileSync('./public/data.txt', buffer, { encoding: 'utf-8'} );
+          fs.writeFileSync('./src/public/data.txt', buffer, { encoding: 'utf-8'} );
           res.statusCode = 200;
           return res.end(JSON.stringify({
               message: 'Number updated'
